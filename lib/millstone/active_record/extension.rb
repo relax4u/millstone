@@ -2,7 +2,7 @@ require 'millstone/active_record/relation_methods'
 
 module Millstone
   module ActiveRecord
-    class AlreadyMarkedDestruction < StandardError
+    class AlreadyMarkedDeletion < StandardError
     end
 
     module Extension
@@ -57,6 +57,14 @@ module Millstone
             end
           end
 
+          def millstone_without_deleted_conditions
+            sanitize_sql(["#{paranoid_column_reference} IS ?", nil])
+          end
+
+          def millstone_only_deleted_conditions
+            sanitize_sql(["#{paranoid_column_reference} IS NOT ?", nil])
+          end
+
           private
             def relation_with_deleted
               relation = relation_without_deleted
@@ -68,7 +76,7 @@ module Millstone
           def destroy
             with_transaction_returning_status do
               _run_destroy_callbacks do
-                raise AlreadyMarkedDestruction, "#{self.class.name} ID=#{self.id} already marked destruction." unless self.paranoid_value.nil?
+                raise AlreadyMarkedDeletion, "#{self.class.name} ID=#{self.id} already marked deletion." unless self.paranoid_value.nil?
                 self.class.delete(self.id)
                 self.paranoid_value = self.class.paranoid_generate_column_value
                 freeze

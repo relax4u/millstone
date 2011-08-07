@@ -108,9 +108,9 @@ module Millstone
           if @with_deleted_value
             # nothing
           elsif @only_deleted_value
-            arel = collapse_wheres(arel, [@klass.send(:sanitize_sql, ["#{@klass.paranoid_column_reference} IS NOT ?", nil])])
+            arel = collapse_wheres(arel, [@klass.millstone_only_deleted_conditions])
           else
-            arel = collapse_wheres(arel, [@klass.send(:sanitize_sql, ["#{@klass.paranoid_column_reference} IS ?", nil])])
+            arel = collapse_wheres(arel, [@klass.millstone_without_deleted_conditions])
           end
 
           arel
