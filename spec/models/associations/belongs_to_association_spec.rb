@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 class ParentHasChild < ActiveRecord::Base
-  set_table_name 'paranoid_time_columns'
+  set_table_name 'time_columns'
   acts_as_paranoid
   has_one :child, :class_name => 'Child', :foreign_key => 'parent_id'
   has_one :child_with_millstone, :class_name => 'ChildWithDeleted', :foreign_key => 'parent_id'

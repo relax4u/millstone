@@ -6,13 +6,13 @@ ActiveRecord::Base.establish_connection('test')
 
 class CreateTestTables < ActiveRecord::Migration
   def self.up
-    create_table :paranoid_time_columns, :force => true do |t|
+    create_table :time_columns, :force => true do |t|
       t.string :context
       t.datetime :deleted_at
       t.timestamps
     end
 
-    create_table :paranoid_boolean_columns, :force => true do |t|
+    create_table :boolean_columns, :force => true do |t|
       t.string :context
       t.boolean :deleted
       t.timestamps
@@ -34,13 +34,3 @@ class CreateTestTables < ActiveRecord::Migration
     end
   end
 end
-
-# models
-class ParanoidTimeColumn < ActiveRecord::Base
-  acts_as_paranoid
-end
-
-class ParanoidBooleanColumn < ActiveRecord::Base
-  acts_as_paranoid :column => :deleted, :type => :boolean
-end
-
