@@ -43,3 +43,4 @@ end
 class ParanoidBooleanColumn < ActiveRecord::Base
   acts_as_paranoid :column => :deleted, :type => :boolean
 end
+
