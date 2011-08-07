@@ -61,6 +61,15 @@ module Millstone
         relation
       end
 
+      def merge(r)
+        merged_relation = super
+        [:with_deleted, :only_deleted].each do |method|
+          value = r.send(:"#{method}_value")
+          merged_relation.send(:"#{method}_value=", value) unless value.nil?
+        end
+        merged_relation
+      end
+
       def except(*skips)
         result = super
         ([:with_deleted, :only_deleted] - skips).each do |method|
@@ -81,7 +90,6 @@ module Millstone
         return clone unless options
 
         finders = options.dup
-
         with_deleted = finders.delete(:with_deleted)
         only_deleted = finders.delete(:only_deleted)
 

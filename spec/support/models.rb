@@ -17,6 +17,13 @@ class CreateTestTables < ActiveRecord::Migration
       t.boolean :deleted
       t.timestamps
     end
+
+    create_table :paranoid_children_time_columns, :force => true do |t|
+      t.integer :parent_id
+      t.string :context
+      t.datetime :deleted_at
+      t.timestamps
+    end
   end
 end
 
@@ -28,3 +35,4 @@ end
 class ParanoidBooleanColumn < ActiveRecord::Base
   acts_as_paranoid :column => :deleted, :type => :boolean
 end
+
