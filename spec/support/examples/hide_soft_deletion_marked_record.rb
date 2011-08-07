@@ -1,0 +1,92 @@
+shared_examples "hide soft deletion marked record" do
+  before do 
+    klass.delete_all
+    3.times { klass.create!(:context => "alive") }
+    2.times { klass.create!(:context => "hidden", klass.paranoid_column => klass.paranoid_generate_column_value) }
+  end
+
+  describe ".all" do
+    subject { klass.all }
+    it { should_not include hidden_record }
+    it { should include alive_record }
+  end
+
+  describe ".find" do
+    context "when specify hidden record" do
+      it "should raise error ActiveRecord::RecordNotFound" do
+        expect do
+          klass.find(hidden_record)
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context "when specify alive record" do
+      subject { klass.find(alive_record) }
+      it { should eq alive_record }
+    end
+  end
+
+  describe ".count" do
+    subject { klass.count }
+    it "should return record count without hidden record" do
+      should == 3
+    end
+  end
+
+  describe ".with_deleted" do
+    describe ".all" do
+      subject { klass.with_deleted.all }
+      it { should include hidden_record }
+      it { should include alive_record }
+    end
+
+    describe ".find" do
+      context "when specify hidden record" do
+        subject { klass.only_deleted.find(hidden_record) }
+        it { should eq hidden_record }
+      end
+
+      context "when specify alive record" do
+        subject { klass.find(alive_record) }
+        it { should eq alive_record }
+      end
+    end
+
+    describe ".count" do
+      subject { klass.with_deleted.count }
+      it "should return all record count" do
+        should == 5
+      end
+    end
+  end
+
+  describe ".only_deleted" do
+    describe ".all" do
+      subject { klass.only_deleted.all }
+      it { should include hidden_record }
+      it { should_not include alive_record }
+    end
+
+    describe ".find" do
+      context "when specify hidden record" do
+        subject { klass.only_deleted.find(hidden_record) }
+        it { should eq hidden_record }
+      end
+
+      context "when specify alive record" do
+        it "should raise error ActiveRecord::RecordNotFound" do
+          expect do
+            klass.only_deleted.find(alive_record)
+          end.to raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
+    end
+
+    describe ".count" do
+      subject { klass.only_deleted.count }
+      it "should return only hidden record count" do
+        should == 2
+      end
+    end
+  end
+end

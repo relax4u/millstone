@@ -22,7 +22,9 @@ end
 
 # models
 class ParanoidTimeColumn < ActiveRecord::Base
+  acts_as_paranoid
 end
 
 class ParanoidBooleanColumn < ActiveRecord::Base
+  acts_as_paranoid :column => :deleted, :type => :boolean
 end
