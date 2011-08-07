@@ -77,6 +77,21 @@ module Millstone
         result
       end
 
+      def apply_finder_options(options)
+        return clone unless options
+
+        finders = options.dup
+
+        with_deleted = finders.delete(:with_deleted)
+        only_deleted = finders.delete(:only_deleted)
+
+        relation = super(finders)
+        relation = relation.with_deleted(with_deleted) unless with_deleted.nil?
+        relation = relation.only_deleted(only_deleted) unless only_deleted.nil?
+
+        relation
+      end
+
       private
         def build_arel
           arel = super

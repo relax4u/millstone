@@ -12,17 +12,23 @@ shared_examples "hide soft deletion marked record" do
   end
 
   describe ".find" do
-    context "when specify hidden record" do
-      it "should raise error ActiveRecord::RecordNotFound" do
-        expect do
-          klass.find(hidden_record)
-        end.to raise_error(ActiveRecord::RecordNotFound)
-      end
+    specify { klass.find(alive_record).should_not be_nil }
+
+    specify do
+      expect { klass.find(hidden_record) }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    context "when specify alive record" do
-      subject { klass.find(alive_record) }
-      it { should eq alive_record }
+    context "options :with_deleted" do
+      specify { klass.find(hidden_record, :with_deleted => true).should_not be_nil }
+      specify { klass.find(alive_record, :with_deleted => true).should_not be_nil }
+    end
+
+    context "options :only_deleted" do
+      specify { klass.find(hidden_record, :only_deleted => true).should_not be_nil }
+
+      specify do
+        expect { klass.find(alive_record, :only_deleted => true) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
   end
 
