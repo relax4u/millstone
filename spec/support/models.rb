@@ -17,6 +17,21 @@ class CreateTestTables < ActiveRecord::Migration
       t.boolean :deleted
       t.timestamps
     end
+
+    create_table :children, :force => true do |t|
+      t.integer :parent_id
+      t.string :context
+      t.datetime :deleted_at
+      t.timestamps
+    end
+
+    create_table :polymorphic_children, :force => true do |t|
+      t.string :polymorphous_type
+      t.integer :polymorphous_id
+      t.string :context
+      t.datetime :deleted_at
+      t.timestamps
+    end
   end
 end
 
