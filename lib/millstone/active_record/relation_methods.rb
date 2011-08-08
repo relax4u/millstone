@@ -72,6 +72,11 @@ module Millstone
 
       def except(*skips)
         result = super
+
+        if ::ActiveRecord::VERSION::TINY < 6
+          result.send :apply_modules, extensions
+        end
+
         ([:with_deleted, :only_deleted] - skips).each do |method|
           result.send(:"#{method}_value=", send(:"#{method}_value"))
         end
@@ -80,6 +85,11 @@ module Millstone
 
       def only(*onlies)
         result = super
+
+        if ::ActiveRecord::VERSION::TINY < 6
+          result.send :apply_modules, extensions
+        end
+
         ([:with_deleted, :only_deleted] & onlies).each do |method|
           result.send(:"#{method}_value=", send(:"#{method}_value"))
         end
