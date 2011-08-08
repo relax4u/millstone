@@ -3,13 +3,13 @@ $:.push File.expand_path("../lib", __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = 'millstone'
-  s.version     = '0.1.0'
+  s.version     = '0.0.1'
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Yoshikazu Ozawa']
   s.email       = ['yoshikazu.ozawa@gmail.com']
   s.homepage    = 'https://github.com/relax4u/millstone'
   s.summary     = 'ActiveRecord plugin which allows you to hide without actually deleting them for Rails3.'
-  s.description = 'Millstone is ActiveRecord plugin which allows you to hide without actually deleting them for Rails3.'
+  s.description = 'ActiveRecord plugin which allows you to hide without actually deleting them for Rails3. Millstone is extending ActiveRecord::Relation'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
@@ -23,4 +23,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'sqlite3', ['>= 0']
   s.add_development_dependency 'rspec', ['>= 2.0.0']
   s.add_development_dependency 'rspec-rails', ['>= 2.0.0']
+  s.add_development_dependency 'delorean', ['>= 0']
 end
