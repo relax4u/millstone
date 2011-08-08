@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 
 Gem::Specification.new do |s|
   s.name        = 'millstone'
-  s.version     = '0.0.1'
+  s.version     = '0.0.2'
   s.platform    = Gem::Platform::RUBY
   s.authors     = ['Yoshikazu Ozawa']
   s.email       = ['yoshikazu.ozawa@gmail.com']
@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
 
   s.licenses = ['MIT']
 
-  s.add_dependency 'rails', ['>= 3.0.0']
+  s.add_dependency 'rails', ['>= 3.0.6']
   s.add_development_dependency 'bundler', ['>= 1.0.0']
   s.add_development_dependency 'sqlite3', ['>= 0']
   s.add_development_dependency 'rspec', ['>= 2.0.0']
