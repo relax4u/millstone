@@ -12,7 +12,7 @@ This plugin was inspired by [rails3_acts_as_paranoid](https://github.com/goncalo
 
 ```ruby
 class User < ActiveRecord::Base
-  acts_as_paranoid
+  millstone
 end
 ```
 
