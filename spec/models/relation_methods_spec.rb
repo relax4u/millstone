@@ -2,17 +2,17 @@ require 'spec_helper'
 
 class MillstoneTimeColumn < ActiveRecord::Base
   set_table_name 'time_columns'
-  acts_as_paranoid
+  millstone
 end
 
 class MillstoneBooleanColumn < ActiveRecord::Base
   set_table_name 'boolean_columns'
-  acts_as_paranoid :column => :deleted, :type => :boolean
+  millstone :column => :deleted, :type => :boolean
 end
 
 describe Millstone::ActiveRecord::RelationMethods do
   let (:alive_record) { klass.create!(:context => "alive") }
-  let (:hidden_record) { klass.create!(:context => "hidden", klass.paranoid_column => klass.paranoid_generate_column_value) }
+  let (:hidden_record) { klass.create!(:context => "hidden", klass.millstone_column => klass.millstone_generate_column_value) }
 
   describe MillstoneTimeColumn do
     let(:klass) { MillstoneTimeColumn }

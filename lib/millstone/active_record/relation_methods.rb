@@ -28,7 +28,7 @@ module Millstone
       end
 
       def delete_all(conditions = nil)
-        conditions ? where(conditions).delete_all : update_all(@klass.paranoid_column => @klass.paranoid_generate_column_value)
+        conditions ? where(conditions).delete_all : update_all(@klass.millstone_column => @klass.millstone_generate_column_value)
       end
 
       def delete_all!(conditions = nil)
@@ -42,7 +42,7 @@ module Millstone
       end
 
       def delete(id_or_array)
-        where(@klass.primary_key => id_or_array).update_all(@klass.paranoid_column => @klass.paranoid_generate_column_value)
+        where(@klass.primary_key => id_or_array).update_all(@klass.millstone_column => @klass.millstone_generate_column_value)
       end
 
       def delete!(id_or_array)
@@ -103,7 +103,7 @@ module Millstone
       private
         def build_arel
           arel = super
-          return arel unless @klass.paranoid?
+          return arel unless @klass.as_millstone?
 
           if @with_deleted_value
             # nothing

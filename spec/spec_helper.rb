@@ -19,5 +19,5 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
 end
 
-CreateTestTables.up unless ActiveRecord::Base.connection.table_exists? 'paranoid_time_column'
+CreateTestTables.up
 

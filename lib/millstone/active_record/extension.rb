@@ -10,66 +10,79 @@ module Millstone
       extend ActiveSupport::Concern
 
       included do
+        class << self
+          # for acts_as_paranoid
+          alias_method :acts_as_paranoid, :millstone
+          alias_method :paranoid?, :as_millstone?
+        end
       end
 
       module ClassMethods
-        def paranoid?
+        def as_millstone?
           self.included_modules.include?(InstanceMethods)
         end
 
-        def acts_as_paranoid(options = {})
+        def millstone(options = {})
           options = options.reverse_merge(:column => :deleted_at, :type => :time)
 
           unless [:time, :boolean].include? options[:type]
             raise ArgumentError, "'time' or 'boolean' expected for :type option, got #{options[:type]}"
           end
 
-          class_attribute :paranoid_configuration, :paranoid_column_reference
-          self.paranoid_configuration = options
-          self.paranoid_column_reference = "#{self.table_name}.#{paranoid_configuration[:column]}"
+          class_attribute :millstone_configuration, :millstone_column_reference
+          self.millstone_configuration = options
+          self.millstone_column_reference = "#{self.table_name}.#{millstone_configuration[:column]}"
           
-          return if paranoid?
+          return if as_millstone?
 
           extend ClassMethods
           include InstanceMethods
           include Validations
+
+          self.class_eval do
+            alias_method :paranoid_value, :millstone_column_value
+          end
+
+          class << self
+            delegate :destroy!, :destroy_all!, :delete!, :delete_all!, :to => :scoped
+            delegate :with_deleted, :only_deleted, :to => :scoped
+            alias_method_chain :relation, :millstone
+
+            # for acts_as_paranoid
+            alias_method :paranoid_column, :millstone_column
+            alias_method :paranoid_column_type, :millstone_type
+            alias_method :paranoid_column_reference, :millstone_column_reference
+            alias_method :paranoid_configuration, :millstone_configuration
+          end
         end
 
         module ClassMethods
-          def self.extended(base)
-            class << base
-              delegate :destroy!, :destroy_all!, :delete!, :delete_all!, :to => :scoped
-              delegate :with_deleted, :only_deleted, :to => :scoped
-              alias_method_chain :relation, :deleted
-            end
+          def millstone_column
+            millstone_configuration[:column].to_sym
           end
 
-          def paranoid_column
-            paranoid_configuration[:column].to_sym
+          def millstone_type
+            millstone_configuration[:type].to_sym
           end
 
-          def paranoid_type
-            paranoid_configuration[:type].to_sym
-          end
-
-          def paranoid_generate_column_value
-            case paranoid_type
+          def millstone_generate_column_value
+            case millstone_type
             when :time then Time.now
             when :boolean then true
             end
           end
 
           def millstone_without_deleted_conditions
-            sanitize_sql(["#{paranoid_column_reference} IS ?", nil])
+            sanitize_sql(["#{millstone_column_reference} IS ?", nil])
           end
 
           def millstone_only_deleted_conditions
-            sanitize_sql(["#{paranoid_column_reference} IS NOT ?", nil])
+            sanitize_sql(["#{millstone_column_reference} IS NOT ?", nil])
           end
 
           private
-            def relation_with_deleted
-              relation = relation_without_deleted
+            def relation_with_millstone
+              relation = relation_without_millstone
               relation.extending Millstone::ActiveRecord::RelationMethods
             end
         end
@@ -78,9 +91,9 @@ module Millstone
           def destroy
             with_transaction_returning_status do
               _run_destroy_callbacks do
-                raise AlreadyMarkedDeletion, "#{self.class.name} ID=#{self.id} already marked deletion." unless self.paranoid_value.nil?
+                raise AlreadyMarkedDeletion, "#{self.class.name} ID=#{self.id} already marked deletion." unless self.millstone_column_value.nil?
                 self.class.delete(self.id)
-                self.paranoid_value = self.class.paranoid_generate_column_value
+                self.millstone_column_value = self.class.millstone_generate_column_value
                 freeze
               end
             end
@@ -95,17 +108,25 @@ module Millstone
             end
           end
 
-          def deleted?
-            !paranoid_value.nil?
+          def recover(options = {})
+            raise "Millstone is not support"
           end
 
-          def paranoid_value
-            self.send(self.class.paranoid_column)
+          def recover_dependent_associations(window, options = {})
+            raise "Millstone is not support"
+          end
+
+          def deleted?
+            !millstone_column_value.nil?
+          end
+
+          def millstone_column_value
+            self.send(self.class.millstone_column)
           end
 
           private
-            def paranoid_value=(value)
-              self.send("#{self.class.paranoid_column}=", value)
+            def millstone_column_value=(value)
+              self.send("#{self.class.millstone_column}=", value)
             end
         end
       end

@@ -2,7 +2,7 @@ shared_examples "hide soft deletion marked record" do
   before do 
     klass.delete_all
     3.times { klass.create!(:context => "alive") }
-    2.times { klass.create!(:context => "hidden", klass.paranoid_column => klass.paranoid_generate_column_value) }
+    2.times { klass.create!(:context => "hidden", klass.millstone_column => klass.millstone_generate_column_value) }
   end
 
   describe ".all" do

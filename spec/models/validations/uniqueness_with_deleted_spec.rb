@@ -3,14 +3,14 @@ require 'spec_helper'
 class UniquenessWithDeleted < ActiveRecord::Base
   set_table_name 'time_columns'
 
-  acts_as_paranoid
+  millstone
   validates_uniqueness_of_with_deleted :context
 end
 
 class UniquenessWithoutDeleted < ActiveRecord::Base
   set_table_name 'time_columns'
 
-  acts_as_paranoid
+  millstone
   validates_uniqueness_of :context
 end
 
