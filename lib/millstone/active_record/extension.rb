@@ -1,4 +1,5 @@
 require 'millstone/active_record/relation_methods'
+require 'millstone/active_record/validations/uniqueness_with_deleted'
 
 module Millstone
   module ActiveRecord
@@ -31,6 +32,7 @@ module Millstone
 
           extend ClassMethods
           include InstanceMethods
+          include Validations
         end
 
         module ClassMethods
