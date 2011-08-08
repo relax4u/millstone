@@ -20,7 +20,7 @@ module Millstone
           has_many_without_millstone(association_id, options, &extension).tap do
             reflection = reflect_on_association(association_id)
 
-            if options[:through] and reflection.through_reflection.klass.paranoid? and !with_deleted
+            if options[:through] and !with_deleted
               collection_accessor_methods(reflection, Millstone::ActiveRecord::Associations::HasManyThroughWithoutDeletedAssociation)
             end
           end

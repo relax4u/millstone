@@ -32,5 +32,18 @@ class CreateTestTables < ActiveRecord::Migration
       t.datetime :deleted_at
       t.timestamps
     end
+
+    create_table :masters, :force => true do |t|
+      t.string :context
+      t.timestamps
+    end
+
+    create_table :havings, :force => true do |t|
+      t.integer :parent_id
+      t.integer :master_id
+      t.datetime :deleted_at
+      t.timestamps
+    end
+
   end
 end
