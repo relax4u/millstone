@@ -125,6 +125,16 @@ module Millstone
 
           arel
         end
+
+        if ::ActiveRecord::VERSION::TINY < 4
+          def collapse_wheres(arel, wheres)
+            wheres.each do |where|
+              where = Arel.sql(where) if String === where
+              arel = arel.where(Arel::Nodes::Grouping.new(where))
+            end
+            arel
+          end
+        end
     end
   end
 end
